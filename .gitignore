@@ -1,0 +1,7 @@
+# Ignore .out files in the build directory (root build/ and all subdirectories)
+/build
+/tests/build/
+/nWaveLog
+/BSSLib.lib++
+/vfastLog
+novas.conf

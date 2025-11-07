@@ -190,7 +190,7 @@ module riscv_sim;
 
     // Get max number of cycles to run simulation for from command line
     if ( !$value$plusargs( "max-cycles=%d", max_cycles ) ) begin
-      max_cycles = 100000;
+      max_cycles = 1000;
     end
 
     // Get stats flag
