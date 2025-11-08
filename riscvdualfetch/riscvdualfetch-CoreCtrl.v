@@ -236,7 +236,9 @@ module riscv_CoreCtrl
         ir1_Dhl    <= imemresp1_queue_mux_out_Fhl;
         bubble_Dhl <= bubble_next_Fhl;
       end
-      squashed_0_D_Dhl <= squash_first_D_inst;
+      if ( !stall_X0hl ) begin
+        squashed_0_D_Dhl <= squash_first_D_inst;
+      end
       brj_taken_0_Dhl_reg <= brj_taken_0_Dhl;
     end
   end
@@ -982,7 +984,7 @@ module riscv_CoreCtrl
 
   // Squash instruction in D if a valid branch in X is taken
 
-  wire squash_Dhl = (( inst_val_X0hl && brj_taken_X0hl ) || brj_taken_0_Dhl_reg );
+  wire squash_Dhl = ( inst_val_X0hl && brj_taken_X0hl );
 
   // For Part 2 of this lab, replace the multdiv and ld stall logic with a scoreboard based stall logic
 
@@ -1057,7 +1059,7 @@ module riscv_CoreCtrl
 
   // Next bubble bit
 
-  wire bubble_sel_Dhl  = ( squash_Dhl || stall_0_Dhl || stall_1_data_Dhl ); // TODO
+  wire bubble_sel_Dhl  = ( squash_Dhl || stall_0_Dhl || stall_1_data_Dhl || stall_X0hl); // TODO
   wire bubble_next_Dhl = ( !bubble_sel_Dhl ) ? bubble_Dhl
                        : ( bubble_sel_Dhl )  ? 1'b1
                        :                       1'bx;
