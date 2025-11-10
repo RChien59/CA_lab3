@@ -35,6 +35,12 @@ module riscv_CoreScoreboard
   input            is_muldiv_A      ,
   input            is_load_A        ,
 
+  input      [4:0] dstB             ,
+  input            dstB_en          ,
+  input            stall_B_Dhl      ,
+  input            is_muldiv_B      ,
+  input            is_load_B        ,
+
   input            stall_X0hl       ,
   input            stall_X1hl
 );
@@ -48,6 +54,8 @@ module riscv_CoreScoreboard
   reg is_muldiv  [0:31];
   reg is_load    [0:31];
   reg [4:0] pipe [0:31];
+
+  // redundant regs for debugging purposes
 
   reg [4:0] pipe0;
   reg [4:0] pipe1;
@@ -81,70 +89,38 @@ module riscv_CoreScoreboard
   reg [4:0] pipe29;
   reg [4:0] pipe30;
   reg [4:0] pipe31;
-  reg muldiv0;
-  reg muldiv1;
-  reg muldiv2;
-  reg muldiv3;
-  reg muldiv4;
-  reg muldiv5;
-  reg muldiv6;
-  reg muldiv7;
-  reg muldiv8;
-  reg muldiv9;
-  reg muldiv10;
-  reg muldiv11;
-  reg muldiv12;
-  reg muldiv13;
-  reg muldiv14;
-  reg muldiv15;
-  reg muldiv16;
-  reg muldiv17;
-  reg muldiv18;
-  reg muldiv19;
-  reg muldiv20;
-  reg muldiv21;
-  reg muldiv22;
-  reg muldiv23;
-  reg muldiv24;
-  reg muldiv25;
-  reg muldiv26;
-  reg muldiv27;
-  reg muldiv28;
-  reg muldiv29;
-  reg muldiv30;
-  reg muldiv31;
-  reg valid0;
-  reg valid1;
-  reg valid2;
-  reg valid3;
-  reg valid4;
-  reg valid5;
-  reg valid6;
-  reg valid7;
-  reg valid8;
-  reg valid9;
-  reg valid10;
-  reg valid11;
-  reg valid12;
-  reg valid13;
-  reg valid14;
-  reg valid15;
-  reg valid16;
-  reg valid17;
-  reg valid18;
-  reg valid19;
-  reg valid20;
-  reg valid21;
-  reg valid22;
-  reg valid23;
-  reg valid24;
-  reg valid25;
-  reg valid26;
-  reg valid27;
-  reg valid28;
-  reg valid29;
-  reg valid30;
-  reg valid31;
+  reg muldiv0, load0, valid0;
+  reg muldiv1, load1, valid1;
+  reg muldiv2, load2, valid2;
+  reg muldiv3, load3, valid3;
+  reg muldiv4, load4, valid4;
+  reg muldiv5, load5, valid5;
+  reg muldiv6, load6, valid6;
+  reg muldiv7, load7, valid7;
+  reg muldiv8, load8, valid8;
+  reg muldiv9, load9, valid9;
+  reg muldiv10, load10, valid10;
+  reg muldiv11, load11, valid11;
+  reg muldiv12, load12, valid12;
+  reg muldiv13, load13, valid13;
+  reg muldiv14, load14, valid14;
+  reg muldiv15, load15, valid15;
+  reg muldiv16, load16, valid16;
+  reg muldiv17, load17, valid17;
+  reg muldiv18, load18, valid18;
+  reg muldiv19, load19, valid19;
+  reg muldiv20, load20, valid20;
+  reg muldiv21, load21, valid21;
+  reg muldiv22, load22, valid22;
+  reg muldiv23, load23, valid23;
+  reg muldiv24, load24, valid24;
+  reg muldiv25, load25, valid25;
+  reg muldiv26, load26, valid26;
+  reg muldiv27, load27, valid27;
+  reg muldiv28, load28, valid28;
+  reg muldiv29, load29, valid29;
+  reg muldiv30, load30, valid30;
+  reg muldiv31, load31, valid31;
 
 
   always @(*) begin
@@ -180,6 +156,38 @@ module riscv_CoreScoreboard
     pipe29 = pipe[29];
     pipe30 = pipe[30];
     pipe31 = pipe[31];
+    load0 = is_load[0];
+    load1 = is_load[1];
+    load2 = is_load[2];
+    load3 = is_load[3];
+    load4 = is_load[4];
+    load5 = is_load[5];
+    load6 = is_load[6];
+    load7 = is_load[7];
+    load8 = is_load[8];
+    load9 = is_load[9];
+    load10 = is_load[10];
+    load11 = is_load[11];
+    load12 = is_load[12];
+    load13 = is_load[13];
+    load14 = is_load[14];
+    load15 = is_load[15];
+    load16 = is_load[16];
+    load17 = is_load[17];
+    load18 = is_load[18];
+    load19 = is_load[19];
+    load20 = is_load[20];
+    load21 = is_load[21];
+    load22 = is_load[22];
+    load23 = is_load[23];
+    load24 = is_load[24];
+    load25 = is_load[25];
+    load26 = is_load[26];
+    load27 = is_load[27];
+    load28 = is_load[28];
+    load29 = is_load[29];
+    load30 = is_load[30];
+    load31 = is_load[31];
     muldiv0  = is_muldiv[0];
     muldiv1  = is_muldiv[1];
     muldiv2  = is_muldiv[2];
@@ -265,6 +273,13 @@ module riscv_CoreScoreboard
           is_load[dstA]    <= is_load_A;
           pipe[dstA][4]    <= 1'b1;
         end
+        else if(dstB_en && (i == dstB) && inst_val_Dhl && !stall_B_Dhl) begin
+          valid_bits[dstB] <= 1'b1;
+          func_bits[dstB]  <= 1'b1;
+          is_muldiv[dstB]  <= is_muldiv_B;
+          is_load[dstB]    <= is_load_B;
+          pipe[dstB][4]    <= 1'b1;
+        end
         else begin
           if (valid_bits[i]) begin
             if (pipe[i] == 5'b00001) begin
@@ -300,16 +315,16 @@ module riscv_CoreScoreboard
 
 always @(*) begin
   if (src00_en) begin
-    src00_byp_mux_sel = clo(pipe[src00]);
+    src00_byp_mux_sel = clo(pipe[src00]) + (func_bits[src00] * 5);
   end
   if (src01_en) begin
-    src01_byp_mux_sel = clo(pipe[src01]);
+    src01_byp_mux_sel = clo(pipe[src01]) + (func_bits[src01] * 5);
   end
   if (src10_en) begin
-    src10_byp_mux_sel = clo(pipe[src10]);
+    src10_byp_mux_sel = clo(pipe[src10]) + (func_bits[src10] * 5);
   end
   if (src11_en) begin
-    src11_byp_mux_sel = clo(pipe[src11]);
+    src11_byp_mux_sel = clo(pipe[src11]) + (func_bits[src11] * 5);
   end
 end
 
