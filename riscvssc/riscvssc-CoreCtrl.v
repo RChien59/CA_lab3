@@ -611,18 +611,8 @@ module riscv_CoreCtrl
       rfA_waddr_Dhl = rf0_waddr_Dhl;
       csr_wen_Dhl = csr_wen_0_Dhl;
       csr_addr_Dhl = csr_addr_0_Dhl;
-      opA0_byp_mux_sel_Dhl
-      = ( rs10_AX0_byp_Dhl ) ? 4'd1 :
-        ( rs10_AX1_byp_Dhl ) ? 4'd2 :
-        ( rs10_AX2_byp_Dhl ) ? 4'd3 :
-        ( rs10_AX3_byp_Dhl ) ? 4'd4 :
-        ( rs10_AW_byp_Dhl  ) ? 4'd5 : 2'b00;
-      opA1_byp_mux_sel_Dhl
-      = ( rs20_AX0_byp_Dhl ) ? 4'd1 :
-        ( rs20_AX1_byp_Dhl ) ? 4'd2 :
-        ( rs20_AX2_byp_Dhl ) ? 4'd3 :
-        ( rs20_AX3_byp_Dhl ) ? 4'd4 :
-        ( rs20_AW_byp_Dhl  ) ? 4'd5 : 2'b00;
+      opA0_byp_mux_sel_Dhl = op00_byp_mux_sel_Dhl;
+      opA1_byp_mux_sel_Dhl = op01_byp_mux_sel_Dhl;
     end
     else if ( steering_mux_sel_Dhl == 1'b1 ) begin
       // TODO: add your steering logic here!
@@ -647,18 +637,8 @@ module riscv_CoreCtrl
       rfA_waddr_Dhl = rf1_waddr_Dhl;
       csr_wen_Dhl = csr_wen_1_Dhl;
       csr_addr_Dhl = csr_addr_1_Dhl;
-      opA0_byp_mux_sel_Dhl
-      = ( rs11_AX0_byp_Dhl ) ? 4'd1 :
-        ( rs11_AX1_byp_Dhl ) ? 4'd2 :
-        ( rs11_AX2_byp_Dhl ) ? 4'd3 :
-        ( rs11_AX3_byp_Dhl ) ? 4'd4 :
-        ( rs11_AW_byp_Dhl  ) ? 4'd5 : 2'b00;
-      opA1_byp_mux_sel_Dhl
-      = ( rs21_AX0_byp_Dhl ) ? 4'd1 :
-        ( rs21_AX1_byp_Dhl ) ? 4'd2 :
-        ( rs21_AX2_byp_Dhl ) ? 4'd3 :
-        ( rs21_AX3_byp_Dhl ) ? 4'd4 :
-        ( rs21_AW_byp_Dhl  ) ? 4'd5 : 2'b00;
+      opA0_byp_mux_sel_Dhl = op10_byp_mux_sel_Dhl;
+      opA1_byp_mux_sel_Dhl = op11_byp_mux_sel_Dhl;
     end
   end
 
@@ -821,37 +801,37 @@ module riscv_CoreCtrl
 
   // Operand Bypass Mux Select
 
-  wire [3:0] op00_byp_mux_sel_Dhl
-    = ( rs10_AX0_byp_Dhl ) ? am_AX0_byp
-    : ( rs10_AX1_byp_Dhl ) ? am_AX1_byp
-    : ( rs10_AX2_byp_Dhl ) ? am_AX2_byp
-    : ( rs10_AX3_byp_Dhl ) ? am_AX3_byp
-    : ( rs10_AW_byp_Dhl  ) ? am_AW_byp
-    :                        am_r0;
+  wire [3:0] op00_byp_mux_sel_Dhl;
+    // = ( rs10_AX0_byp_Dhl ) ? am_AX0_byp
+    // : ( rs10_AX1_byp_Dhl ) ? am_AX1_byp
+    // : ( rs10_AX2_byp_Dhl ) ? am_AX2_byp
+    // : ( rs10_AX3_byp_Dhl ) ? am_AX3_byp
+    // : ( rs10_AW_byp_Dhl  ) ? am_AW_byp
+    // :                        am_r0;
 
-  wire [3:0] op01_byp_mux_sel_Dhl
-    = ( rs20_AX0_byp_Dhl ) ? bm_AX0_byp
-    : ( rs20_AX1_byp_Dhl ) ? bm_AX1_byp
-    : ( rs20_AX2_byp_Dhl ) ? bm_AX2_byp
-    : ( rs20_AX3_byp_Dhl ) ? bm_AX3_byp
-    : ( rs20_AW_byp_Dhl  ) ? bm_AW_byp
-    :                        bm_r1;
+  wire [3:0] op01_byp_mux_sel_Dhl;
+    // = ( rs20_AX0_byp_Dhl ) ? bm_AX0_byp
+    // : ( rs20_AX1_byp_Dhl ) ? bm_AX1_byp
+    // : ( rs20_AX2_byp_Dhl ) ? bm_AX2_byp
+    // : ( rs20_AX3_byp_Dhl ) ? bm_AX3_byp
+    // : ( rs20_AW_byp_Dhl  ) ? bm_AW_byp
+    // :                        bm_r1;
 
-  wire [3:0] op10_byp_mux_sel_Dhl
-    = ( rs11_AX0_byp_Dhl ) ? am_AX0_byp
-    : ( rs11_AX1_byp_Dhl ) ? am_AX1_byp
-    : ( rs11_AX2_byp_Dhl ) ? am_AX2_byp
-    : ( rs11_AX3_byp_Dhl ) ? am_AX3_byp
-    : ( rs11_AW_byp_Dhl  ) ? am_AW_byp
-    :                        am_r0;
+  wire [3:0] op10_byp_mux_sel_Dhl;
+    // = ( rs11_AX0_byp_Dhl ) ? am_AX0_byp
+    // : ( rs11_AX1_byp_Dhl ) ? am_AX1_byp
+    // : ( rs11_AX2_byp_Dhl ) ? am_AX2_byp
+    // : ( rs11_AX3_byp_Dhl ) ? am_AX3_byp
+    // : ( rs11_AW_byp_Dhl  ) ? am_AW_byp
+    // :                        am_r0;
 
-  wire [3:0] op11_byp_mux_sel_Dhl
-    = ( rs21_AX0_byp_Dhl ) ? bm_AX0_byp
-    : ( rs21_AX1_byp_Dhl ) ? bm_AX1_byp
-    : ( rs21_AX2_byp_Dhl ) ? bm_AX2_byp
-    : ( rs21_AX3_byp_Dhl ) ? bm_AX3_byp
-    : ( rs21_AW_byp_Dhl  ) ? bm_AW_byp
-    :                        bm_r1;
+  wire [3:0] op11_byp_mux_sel_Dhl;
+    // = ( rs21_AX0_byp_Dhl ) ? bm_AX0_byp
+    // : ( rs21_AX1_byp_Dhl ) ? bm_AX1_byp
+    // : ( rs21_AX2_byp_Dhl ) ? bm_AX2_byp
+    // : ( rs21_AX3_byp_Dhl ) ? bm_AX3_byp
+    // : ( rs21_AW_byp_Dhl  ) ? bm_AW_byp
+    // :                        bm_r1;
 
   // Operand Mux Select
 
@@ -940,43 +920,43 @@ module riscv_CoreCtrl
   wire [11:0] csr_addr_0_Dhl = ir0_Dhl[31:20];
   wire [11:0] csr_addr_1_Dhl = ir1_Dhl[31:20];
 
-  //----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
   // Scoreboard
-  //----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
 
-  // riscv_CoreScoreboard scoreboard
-  // (
-  //   .clk               (),
-  //   .reset             (),
+  riscv_CoreScoreboard scoreboard
+  (
+    .clk               (clk),
+    .reset             (reset),
 
-  //   .inst_val_Dhl      (),
+    .inst_val_Dhl      (inst_val_Dhl),
 
-  //   .src00             (),
-  //   .src00_en          (),
-  //   .src01             (),
-  //   .src01_en          (),
-  //   .src10             (),
-  //   .src10_en          (),
-  //   .src11             (),
-  //   .src11_en          (),
+    .src00             (rs10_addr_Dhl),
+    .src00_en          (rs10_en_Dhl && !steering_mux_sel_Dhl),
+    .src01             (rs20_addr_Dhl),
+    .src01_en          (rs20_en_Dhl && !steering_mux_sel_Dhl),
+    .src10             (rs11_addr_Dhl),
+    .src10_en          (rs11_en_Dhl && steering_mux_sel_Dhl),
+    .src11             (rs21_addr_Dhl),
+    .src11_en          (rs21_en_Dhl && steering_mux_sel_Dhl),
 
-  //   .stall_0_hazard    (),
-  //   .stall_1_hazard    (),
+    .stall_0_hazard    (stall_0_data_Dhl),
+    .stall_1_hazard    (stall_1_data_Dhl),
 
-  //   .src00_byp_mux_sel (),
-  //   .src01_byp_mux_sel (),
-  //   .src10_byp_mux_sel (),
-  //   .src11_byp_mux_sel (),
+    .src00_byp_mux_sel (op00_byp_mux_sel_Dhl),
+    .src01_byp_mux_sel (op01_byp_mux_sel_Dhl),
+    .src10_byp_mux_sel (op10_byp_mux_sel_Dhl),
+    .src11_byp_mux_sel (op11_byp_mux_sel_Dhl),
 
-  //   .dstA              (),
-  //   .dstA_en           (),
-  //   .stall_A_Dhl       (),
-  //   .is_muldiv_A       (),
-  //   .is_load_A         (),
+    .dstA              (rfA_waddr_Dhl),
+    .dstA_en           (rfA_wen_Dhl),
+    .stall_A_Dhl       (stall_Dhl && (!stall_1_control_Dhl || stall_X0hl)),
+    .is_muldiv_A       (muldivreq_val_Dhl),
+    .is_load_A         (is_load_Dhl),
 
-  //   .stall_X0hl        (),
-  //   .stall_X1hl        ()
-  // );
+    .stall_X0hl        (stall_X0hl),
+    .stall_X1hl        (stall_X1hl)
+  );
 
   //----------------------------------------------------------------------
   // Squash and Stall Logic
@@ -1050,10 +1030,12 @@ module riscv_CoreCtrl
 
   // Aggregate Stall Signal
 
-  wire stall_0_Dhl = ( steering_mux_sel_Dhl == 0 ) && ( stall_0_muldiv_use_Dhl || stall_0_load_use_Dhl );
-  wire stall_1_data_Dhl = ( steering_mux_sel_Dhl == 1 ) && ( stall_1_muldiv_use_Dhl || stall_1_load_use_Dhl );
+  wire stall_0_data_Dhl;
+  wire stall_0_Dhl = ( steering_mux_sel_Dhl == 0 ) && stall_0_data_Dhl;
+  // wire stall_1_data_Dhl = ( steering_mux_sel_Dhl == 1 ) && ( stall_1_muldiv_use_Dhl || stall_1_load_use_Dhl );
+  wire stall_1_data_Dhl;
   wire stall_1_control_Dhl = ( steering_mux_sel_Dhl == 0 ) && !brj_taken_0_Dhl;
-  wire stall_1_Dhl = stall_1_control_Dhl || stall_1_data_Dhl;
+  wire stall_1_Dhl = stall_1_control_Dhl || ( steering_mux_sel_Dhl == 1 ) && stall_1_data_Dhl;
 
   assign stall_Dhl = stall_X0hl || (inst_val_Dhl && (stall_0_Dhl || stall_1_Dhl)); // TODO
 
