@@ -235,11 +235,11 @@ module riscv_CoreCtrl
         ir0_Dhl    <= imemresp0_queue_mux_out_Fhl;
         ir1_Dhl    <= imemresp1_queue_mux_out_Fhl;
         bubble_Dhl <= bubble_next_Fhl;
+      brj_taken_0_Dhl_reg <= brj_taken_Dhl;
       end
       if ( !stall_X0hl ) begin
         squashed_0_D_Dhl <= squash_first_D_inst;
       end
-      brj_taken_0_Dhl_reg <= brj_taken_0_Dhl;
     end
   end
 
@@ -617,35 +617,35 @@ module riscv_CoreCtrl
         instB_Dhl = ir1_Dhl;
 
         brj_taken_Dhl = 1'b0;
-        br_sel_Dhl = br_sel_0_Dhl;
-        pc_mux_sel_Dhl = pc_mux_sel_0_Dhl;
+        br_sel_Dhl = br_none;
+        pc_mux_sel_Dhl = pm_x;
 
         opA0_mux_sel_Dhl = op00_mux_sel_Dhl;
         opA1_mux_sel_Dhl = op01_mux_sel_Dhl;
         opB0_mux_sel_Dhl = op10_mux_sel_Dhl;
         opB1_mux_sel_Dhl = op11_mux_sel_Dhl;
 
-        aluA_fn_Dhl = alu0_fn_Dhl;
+        aluA_fn_Dhl = alu_x;
         aluB_fn_Dhl = alu1_fn_Dhl;
 
-        muldivreq_msg_fn_Dhl = muldivreq_msg_fn_0_Dhl;
+        muldivreq_msg_fn_Dhl = md_x;
         muldivreq_val_Dhl = 1'b0;
-        muldiv_mux_sel_Dhl = muldiv_mux_sel_0_Dhl;
-        execute_mux_sel_Dhl = execute_mux_sel_0_Dhl;
+        muldiv_mux_sel_Dhl = mdm_x;
+        execute_mux_sel_Dhl = em_x;
         is_load_Dhl = 1'b0;
-        dmemreq_msg_rw_Dhl = dmemreq_msg_rw_0_Dhl;
-        dmemreq_msg_len_Dhl = dmemreq_msg_len_0_Dhl;
+        dmemreq_msg_rw_Dhl = nr;
+        dmemreq_msg_len_Dhl = ml_x;
         dmemreq_val_Dhl = 1'b0;
-        dmemresp_mux_sel_Dhl = dmemresp_mux_sel_0_Dhl;
-        memex_mux_sel_Dhl = memex_mux_sel_0_Dhl;
+        dmemresp_mux_sel_Dhl = dmm_x;
+        memex_mux_sel_Dhl = wm_x;
 
         rfA_wen_Dhl = 1'b0;
-        rfA_waddr_Dhl = rf0_waddr_Dhl;
+        rfA_waddr_Dhl = 0;
         rfB_wen_Dhl = rf1_wen_Dhl;
         rfB_waddr_Dhl = rf1_waddr_Dhl;
 
-        csr_wen_Dhl = csr_wen_0_Dhl;
-        csr_addr_Dhl = csr_addr_0_Dhl;
+        csr_wen_Dhl = 0;
+        csr_addr_Dhl = 0;
 
         opA0_byp_mux_sel_Dhl = op00_byp_mux_sel_Dhl;
         opA1_byp_mux_sel_Dhl = op01_byp_mux_sel_Dhl;
@@ -657,12 +657,12 @@ module riscv_CoreCtrl
       end
       else if ( steering_mux_sel_Dhl == 1'b1 ) begin
         // TODO: add your steering logic here!
-        instA_Dhl = ir1_Dhl;
+        instA_Dhl = brj_taken_0_Dhl_reg ? 0 : ir1_Dhl;
         instB_Dhl = 0;
 
-        brj_taken_Dhl = brj_taken_1_Dhl;
-        br_sel_Dhl = br_sel_1_Dhl;
-        pc_mux_sel_Dhl = pc_mux_sel_1_Dhl;
+        brj_taken_Dhl = brj_taken_0_Dhl_reg ? 0 : brj_taken_1_Dhl;
+        br_sel_Dhl = brj_taken_0_Dhl_reg ? br_none : br_sel_1_Dhl;
+        pc_mux_sel_Dhl = brj_taken_0_Dhl_reg ? pm_x : pc_mux_sel_1_Dhl;
 
         opA0_mux_sel_Dhl = op10_mux_sel_Dhl;
         opA1_mux_sel_Dhl = op11_mux_sel_Dhl;
@@ -673,23 +673,23 @@ module riscv_CoreCtrl
         aluB_fn_Dhl = alu0_fn_Dhl;
 
         muldivreq_msg_fn_Dhl = muldivreq_msg_fn_1_Dhl;
-        muldivreq_val_Dhl = muldivreq_val_1_Dhl;
+        muldivreq_val_Dhl = brj_taken_0_Dhl_reg ? 0 : muldivreq_val_1_Dhl;
         muldiv_mux_sel_Dhl = muldiv_mux_sel_1_Dhl;
         execute_mux_sel_Dhl = execute_mux_sel_1_Dhl;
         is_load_Dhl = is_load_1_Dhl;
         dmemreq_msg_rw_Dhl = dmemreq_msg_rw_1_Dhl;
         dmemreq_msg_len_Dhl = dmemreq_msg_len_1_Dhl;
-        dmemreq_val_Dhl = dmemreq_val_1_Dhl;
+        dmemreq_val_Dhl = brj_taken_0_Dhl_reg ? 0 : dmemreq_val_1_Dhl;
         dmemresp_mux_sel_Dhl = dmemresp_mux_sel_1_Dhl;
         memex_mux_sel_Dhl = memex_mux_sel_1_Dhl;
 
-        rfA_wen_Dhl = rf1_wen_Dhl;
-        rfA_waddr_Dhl = rf1_waddr_Dhl;
+        rfA_wen_Dhl = brj_taken_0_Dhl_reg ? 0 : rf1_wen_Dhl;
+        rfA_waddr_Dhl = brj_taken_0_Dhl_reg ? 0 : rf1_waddr_Dhl;
         rfB_wen_Dhl = 1'b0;
-        rfB_waddr_Dhl = rf0_waddr_Dhl;
+        rfB_waddr_Dhl = 0;
 
-        csr_wen_Dhl = csr_wen_1_Dhl;
-        csr_addr_Dhl = csr_addr_1_Dhl;
+        csr_wen_Dhl = brj_taken_0_Dhl_reg ? 0 : csr_wen_1_Dhl;
+        csr_addr_Dhl = brj_taken_0_Dhl_reg ? 0 : csr_addr_1_Dhl;
 
         opA0_byp_mux_sel_Dhl = op10_byp_mux_sel_Dhl;
         opA1_byp_mux_sel_Dhl = op11_byp_mux_sel_Dhl;
@@ -732,7 +732,7 @@ module riscv_CoreCtrl
         rfA_wen_Dhl = rf0_wen_Dhl;
         rfA_waddr_Dhl = rf0_waddr_Dhl;
         rfB_wen_Dhl = stall_1_Dhl ? 0 : rf1_wen_Dhl;
-        rfB_waddr_Dhl = rf1_waddr_Dhl;
+        rfB_waddr_Dhl = stall_1_Dhl ? 0 : rf1_waddr_Dhl;
 
         csr_wen_Dhl = csr_wen_0_Dhl;
         csr_addr_Dhl = csr_addr_0_Dhl;
@@ -743,7 +743,7 @@ module riscv_CoreCtrl
         opB1_byp_mux_sel_Dhl = op11_byp_mux_sel_Dhl;
 
         stall_A_Dhl = stall_0_Dhl;
-        stall_B_Dhl = stall_1_Dhl;
+        stall_B_Dhl = stall_1_Dhl ? 0 : stall_1_Dhl;
       end
       else if ( steering_mux_sel_Dhl == 1'b1 ) begin
         // TODO: add your steering logic here!
@@ -1077,12 +1077,12 @@ module riscv_CoreCtrl
     .clk               (clk),
     .reset             (reset),
 
-    .inst_val_Dhl      (inst_val_Dhl),
+    .inst_val_Dhl      (inst_val_Dhl && !stall_X0hl),
 
     .src00             (rs10_addr_Dhl),
-    .src00_en          (rs10_en_Dhl),
+    .src00_en          (rs10_en_Dhl && !squashed_0_D_Dhl),
     .src01             (rs20_addr_Dhl),
-    .src01_en          (rs20_en_Dhl),
+    .src01_en          (rs20_en_Dhl && !squashed_0_D_Dhl),
     .src10             (rs11_addr_Dhl),
     .src10_en          (rs11_en_Dhl),
     .src11             (rs21_addr_Dhl),
@@ -1098,15 +1098,15 @@ module riscv_CoreCtrl
 
     .dstA              (rfA_waddr_Dhl),
     .dstA_en           (rfA_wen_Dhl),
-    .stall_A_Dhl       (stall_A_Dhl || stall_X0hl),
+    .stall_A_Dhl       (stall_A_Dhl || stall_X0hl || (inst_val_Dhl && muldivreq_val_Dhl && !muldivreq_rdy)),
     .is_muldiv_A       (muldivreq_val_Dhl),
     .is_load_A         (is_load_Dhl),
 
     .dstB              (rfB_waddr_Dhl),
     .dstB_en           (rfB_wen_Dhl),
-    .stall_B_Dhl       (stall_B_Dhl || stall_X0hl),
-    .is_muldiv_B       (muldivreq_val_Dhl),
-    .is_load_B         (is_load_Dhl),
+    .stall_B_Dhl       (stall_B_Dhl || stall_X0hl || (inst_val_Dhl && muldivreq_val_Dhl && !muldivreq_rdy)),
+    .is_muldiv_B       (1'b0),
+    .is_load_B         (1'b0),
 
     .stall_X0hl        (stall_X0hl),
     .stall_X1hl        (stall_X1hl)
@@ -1200,16 +1200,16 @@ module riscv_CoreCtrl
                     && (rf1_waddr_Dhl == rf0_waddr_Dhl)
                     && (rf0_waddr_Dhl != 5'd0));
   wire stall_1_load_mul_Dhl;
-  wire stall_1_data_Dhl = stall_1_raw_Dhl || stall_1_waw_Dhl || (!inst0_simple && !inst1_simple);
+  wire stall_1_data_Dhl = stall_1_raw_Dhl || stall_1_waw_Dhl || (!inst0_simple && !inst1_simple) || (br_sel_0_Dhl != br_none) || stall_1_load_mul_Dhl;
   // wire stall_1_control_Dhl = (brj_taken_0_Dhl || br_sel_0_Dhl != br_none) && !squashed_0_D_Dhl;
   wire stall_1_control_Dhl = brj_taken_0_Dhl && !squashed_0_D_Dhl;
-  wire stall_1_Dhl = stall_0_Dhl || stall_1_control_Dhl || (stall_1_data_Dhl && !squashed_0_D_Dhl) || stall_1_load_mul_Dhl;
+  wire stall_1_Dhl = stall_0_Dhl || (stall_1_data_Dhl && !squashed_0_D_Dhl) || stall_1_load_mul_Dhl;
 
-  assign stall_Dhl = stall_X0hl || (inst_val_Dhl && (stall_0_Dhl || (stall_1_data_Dhl && !squashed_0_D_Dhl) || stall_1_load_mul_Dhl)); // TODO
+  assign stall_Dhl = stall_X0hl || ((inst_val_Dhl && ((stall_0_Dhl || (stall_1_data_Dhl && !squashed_0_D_Dhl) || stall_1_load_mul_Dhl) && !stall_1_control_Dhl) || (muldivreq_val_Dhl && !muldivreq_rdy))); // TODO
 
   // Next bubble bit
 
-  wire bubble_sel_Dhl  = ( squash_Dhl || stall_0_Dhl || stall_X0hl || (stall_1_load_mul_Dhl && steering_mux_sel_Dhl)); // TODO
+  wire bubble_sel_Dhl  = ( squash_Dhl || stall_0_Dhl || stall_X0hl || (stall_1_load_mul_Dhl && squashed_0_D_Dhl)); // TODO
   wire bubble_next_Dhl = ( !bubble_sel_Dhl ) ? bubble_Dhl
                        : ( bubble_sel_Dhl )  ? 1'b1
                        :                       1'bx;
@@ -1747,7 +1747,11 @@ module riscv_CoreCtrl
         // Count instructions for every cycle not squashed or stalled
 
         // FIXME: fix this when you can have at most two instructions issued per cycle!
-        if ( inst_val_Dhl && !stall_Dhl ) begin
+        if ( inst_val_Dhl && !stall_0_Dhl ) begin
+          num_inst = num_inst + 1;
+        end
+
+        if ( inst_val_Dhl && !stall_1_Dhl ) begin
           num_inst = num_inst + 1;
         end
 
